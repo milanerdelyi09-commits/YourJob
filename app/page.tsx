@@ -1,4 +1,8 @@
+"use client"
+import { useState } from "react";
 export default function Home() {
+  const [search, setSearch] = useState("");
+  const [location, setLocation] = useState("");
   return (
     <main className="min-h-screen bg-slate-50">
       {/* Fejléc */}
@@ -9,7 +13,7 @@ export default function Home() {
           </div>
 
           <nav className="flex items-center gap-6 text-sm font-medium text-slate-600">
-            <a href="#" className="hover:text-blue-700">
+            <a href="/allasok" className="hover:text-blue-700">
               Állások
             </a>
             <a href="#" className="hover:text-blue-700">
@@ -46,21 +50,27 @@ export default function Home() {
           {/* Kereső */}
           <div className="mt-10 rounded-2xl border bg-slate-50 p-4 shadow-sm">
             <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto]">
-              <input
-                type="text"
-                placeholder="Milyen munkát keresel?"
-                className="rounded-xl border bg-blue px-4 py-4 outline-none focus:border-blue-500"
-              />
-
+             <input
+  type="text"
+  placeholder="Milyen munkát keresel?"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="rounded-xl border bg-white px-4 py-4 outline-none focus:border-blue-500"
+/>
               <input
                 type="text"
                 placeholder="Hol szeretnél dolgozni?"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
                 className="rounded-xl border bg-white px-4 py-4 outline-none focus:border-blue-500"
               />
 
-              <button className="rounded-xl bg-blue-700 px-8 py-4 font-semibold text-white hover:bg-blue-800">
-                Állások keresése
-              </button>
+              <a
+ href={`/allasok?kereses=${encodeURIComponent(search)}&hely=${encodeURIComponent(location)}`}
+  className="rounded-xl bg-blue-700 px-8 py-4 font-semibold text-white hover:bg-blue-800"
+>
+  Állások keresése
+</a>
             </div>
           </div>
         </div>
@@ -123,5 +133,4 @@ export default function Home() {
       </section>
     </main>
   );
-  
 }
