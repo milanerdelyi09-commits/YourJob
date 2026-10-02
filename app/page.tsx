@@ -66,7 +66,7 @@ export default function Home() {
               />
 
               <a
- href={`/allasok?kereses=${encodeURIComponent(search)}&hely=${encodeURIComponent(location)}`}
+  href={`/allasok?kereses=${encodeURIComponent(search)}`}
   className="rounded-xl bg-blue-700 px-8 py-4 font-semibold text-white hover:bg-blue-800"
 >
   Állások keresése

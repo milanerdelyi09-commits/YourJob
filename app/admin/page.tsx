@@ -2,6 +2,7 @@ import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { createClient as createServerClient } from "../../lib/supabaseServer";
 import { redirect } from "next/navigation";
 import LogoutButton from "./LogoutButton";
+import StatusSelect from "./StatusSelect";
 type JobInfo = {
   title: string;
   company: string;
@@ -125,10 +126,11 @@ F
               )}
 
               <div className="mt-5 border-t pt-5">
-                <span className="rounded-lg bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700">
-                  {application.status}
-                </span>
-              </div>
+  <StatusSelect
+    applicationId={application.id}
+    currentStatus={application.status ?? "submitted"}
+  />
+</div>
             </div>
           ))}
 
