@@ -20,7 +20,13 @@ type ApplicationRow = {
   job: JobInfo | null;
 };
 
-export default async function AdminPage() {
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const params = await searchParams;
+  const statusFilter = params.status || "all";
   const supabaseAuth = await createServerClient();
 
 const {

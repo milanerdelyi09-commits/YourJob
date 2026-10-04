@@ -16,7 +16,7 @@ export default function Home() {
             <a href="/allasok" className="hover:text-blue-700">
               Állások
             </a>
-            <a href="#" className="hover:text-blue-700">
+            <a href="/munkaltato" className="hover:text-blue-700">
               Munkáltatóknak
             </a>
             <button className="rounded-lg border px-4 py-2 hover:bg-slate-50">

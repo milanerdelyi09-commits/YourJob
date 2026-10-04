@@ -58,6 +58,7 @@ const { data: job, error } = await supabase
   .from("jobs")
   .select("*")
   .eq("slug", id)
+  .eq("status", "active")
   .single();
   console.log("REQUIREMENTS:", job?.requirements);
 if (error || !job) {

@@ -9,7 +9,8 @@ export default async function JobsPage({
   const location = (params.hely || "").toLowerCase();
   const { data, error } = await supabase
   .from("jobs")
-  .select("*");
+  .select("*")
+  .eq("status", "active");
 
 const jobs = data ?? [];
 
