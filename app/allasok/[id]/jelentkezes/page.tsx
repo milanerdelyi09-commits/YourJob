@@ -1,24 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { supabase } from "../../../../lib/supabase";
-
+import { createClient } from "../../../../lib/supabaseClient";
 export default function ApplicationPage() {
+  const supabase = createClient();
   const params = useParams();
 const slug = params.id as string;
   const [submitted, setSubmitted] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+useEffect(() => {
+  async function loadProfile() {
+    const profileClient = createClient();
+
+    const {
+      data: { user },
+    } = await profileClient.auth.getUser();
+
+    if (!user) {
+      return;
+    }
+
+    setEmail(user.email ?? "");
+
+    const { data: profile } = await profileClient
+      .from("profiles")
+      .select("full_name, phone")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profile) {
+      setName(profile.full_name ?? "");
+      setPhone(profile.phone ?? "");
+    }
+  }
+
+  loadProfile();
+}, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
-
+  setErrorMessage("");
+  
   const formData = new FormData(e.currentTarget);
 
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const phone = formData.get("phone") as string;
   const message = formData.get("message") as string;
-  const { data: job, error: jobError } = await supabase
+  const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+const { data: job, error: jobError } = await supabase
   .from("jobs")
   .select("id")
   .eq("slug", slug)
@@ -33,6 +71,7 @@ if (jobError || !job) {
     .from("applications")
     .insert({
   job_id: job.id,
+  user_id: user?.id ?? null,
   name,
   email,
   phone,
@@ -40,10 +79,15 @@ if (jobError || !job) {
   status: "submitted",
 });
   if (error) {
-    console.error("Jelentkezési hiba:", error);
+  if (error.code === "23505") {
+    setErrorMessage("Erre az állásra már jelentkeztél.");
     return;
   }
 
+  console.error("Jelentkezési hiba:", error);
+  setErrorMessage("Nem sikerült elküldeni a jelentkezést.");
+  return;
+}
   setSubmitted(true);
 }
 
@@ -98,11 +142,13 @@ if (jobError || !job) {
               </label>
 
               <input
-                type="text"
-                name="name"
-                required
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
-              />
+  type="text"
+  name="name"
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+  required
+  className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
+/>
             </div>
 
             <div>
@@ -111,11 +157,13 @@ if (jobError || !job) {
               </label>
 
               <input
-                type="email"
-                name="email"
-                required
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
-              />
+  type="email"
+  name="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+  className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
+/>
             </div>
 
             <div>
@@ -124,11 +172,13 @@ if (jobError || !job) {
               </label>
 
               <input
-                type="tel"
-                name="phone"
-                required
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
-              />
+  type="tel"
+  name="phone"
+  value={phone}
+  onChange={(e) => setPhone(e.target.value)}
+  required
+  className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
+/>
             </div>
 
             <div>
@@ -142,7 +192,11 @@ if (jobError || !job) {
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
               />
             </div>
-
+{errorMessage && (
+  <p className="rounded-xl bg-red-50 p-4 text-sm font-semibold text-red-700">
+    {errorMessage}
+  </p>
+)}
             <button
               type="submit"
               className="w-full rounded-xl bg-blue-700 px-6 py-4 font-semibold text-white hover:bg-blue-800"

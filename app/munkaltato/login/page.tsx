@@ -35,8 +35,16 @@ export default function EmployerLoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-md rounded-2xl border bg-white p-8 shadow-sm">
+  <main className="min-h-screen bg-slate-50 px-6 py-10">
+    <div className="mx-auto max-w-md">
+      <a
+        href="/"
+        className="mb-6 inline-block font-semibold text-blue-700 hover:underline"
+      >
+        ← Vissza a főoldalra
+      </a>
+
+      <div className="w-full rounded-2xl border bg-white p-8 shadow-sm">
         <p className="text-sm font-semibold text-blue-700">
           YourJob Munkáltatói felület
         </p>
@@ -93,6 +101,7 @@ export default function EmployerLoginPage() {
           </button>
         </form>
       </div>
-    </main>
-  );
+    </div>
+  </main>
+);
 }

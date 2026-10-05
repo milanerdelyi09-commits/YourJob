@@ -1,8 +1,12 @@
-"use client"
+"use client";
+
 import { useState } from "react";
+import UserAccountNav from "./UserAccountNav";
+
 export default function Home() {
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
+
   return (
     <main className="min-h-screen bg-slate-50">
       {/* Fejléc */}
@@ -16,12 +20,12 @@ export default function Home() {
             <a href="/allasok" className="hover:text-blue-700">
               Állások
             </a>
+
             <a href="/munkaltato" className="hover:text-blue-700">
               Munkáltatóknak
             </a>
-            <button className="rounded-lg border px-4 py-2 hover:bg-slate-50">
-              Bejelentkezés
-            </button>
+
+            <UserAccountNav />
           </nav>
         </div>
       </header>
@@ -66,7 +70,7 @@ export default function Home() {
               />
 
               <a
-  href={`/allasok?kereses=${encodeURIComponent(search)}`}
+  href={`/allasok?kereses=${encodeURIComponent(search)}&hely=${encodeURIComponent(location)}`}
   className="rounded-xl bg-blue-700 px-8 py-4 font-semibold text-white hover:bg-blue-800"
 >
   Állások keresése
@@ -126,9 +130,12 @@ export default function Home() {
             Profil létrehozása után az megkönnyíted a számodra legrelevánsabb állásokat.
           </p>
 
-          <button className="mt-8 rounded-xl bg-white px-6 py-3 font-semibold text-blue-700 hover:bg-slate-100">
-            Profil létrehozása
-          </button>
+          <a
+  href="/regisztracio"
+  className="mt-8 inline-block rounded-xl bg-white px-6 py-3 font-semibold text-blue-700 hover:bg-slate-100"
+>
+  Profil létrehozása
+</a>
         </div>
       </section>
     </main>
