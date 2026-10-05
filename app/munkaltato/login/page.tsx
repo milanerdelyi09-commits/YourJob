@@ -98,8 +98,18 @@ export default function EmployerLoginPage() {
             className="w-full rounded-xl bg-blue-700 px-6 py-4 font-semibold text-white hover:bg-blue-800 disabled:opacity-50"
           >
             {loading ? "Belépés..." : "Belépés"}
+            
           </button>
         </form>
+        <p className="mt-6 text-center text-sm text-slate-600">
+  Még nincs munkáltatói fiókod?{" "}
+  <a
+    href="/munkaltato/regisztracio"
+    className="font-semibold text-blue-700 hover:underline"
+  >
+    Regisztráció
+  </a>
+</p>
       </div>
     </div>
   </main>
