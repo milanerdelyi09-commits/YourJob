@@ -1,18 +1,146 @@
 import { supabase } from "../../lib/supabase";
+import SortSelect from "./SortSelect";
+import WorkScheduleFilter from "./WorkScheduleFilter";
+import SalaryFilter from "./SalaryFilter";
+import ClearFiltersButton from "./ClearFiltersButton";
+import UserAccountNav from "../UserAccountNav";
+
 export default async function JobsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ kereses?: string; hely?: string }>;
+  searchParams: Promise<{
+    kereses?: string;
+    hely?: string;
+    rendezes?: string;
+    munkarend?: string;
+    minber?: string;
+    maxber?: string;
+  }>;
 }) {
   const params = await searchParams;
   const search = (params.kereses || "").toLowerCase();
   const location = (params.hely || "").toLowerCase();
-  const { data, error } = await supabase
-  .from("jobs")
-  .select("*")
-  .eq("status", "active");
+  const sort = params.rendezes || "relevance";
+  const minSalary = Number(params.minber || 0);
+const maxSalary = Number(params.maxber || 0);
+const workSchedules = (params.munkarend || "")
 
-const jobs = data ?? [];
+  .split(",")
+  .filter(Boolean);
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("*")
+    .eq("status", "active");
+
+  const jobs = data ?? [];
+  function getSalaryRange(salary: string | null) {
+  if (!salary) {
+    return {
+      min: 0,
+      max: 0,
+    };
+  }
+
+  const numbers =
+    salary
+      .match(/\d[\d\s.]*/g)
+      ?.map((value) =>
+        Number(value.replace(/[^\d]/g, ""))
+      )
+      .filter((value) => !Number.isNaN(value)) ?? [];
+
+  if (numbers.length === 0) {
+    return {
+      min: 0,
+      max: 0,
+    };
+  }
+
+  if (numbers.length === 1) {
+    return {
+      min: numbers[0],
+      max: numbers[0],
+    };
+  }
+
+  return {
+    min: Math.min(...numbers),
+    max: Math.max(...numbers),
+  };
+}
+const filteredJobs = jobs.filter((job) => {
+  const matchesSearch = job.title
+    .toLowerCase()
+    .includes(search);
+
+  const matchesLocation = job.location
+    .toLowerCase()
+    .includes(location);
+
+  const jobType = (job.type ?? "").toLowerCase();
+
+  const matchesWorkSchedule =
+    workSchedules.length === 0 ||
+    workSchedules.some((schedule) => {
+      if (schedule === "teljes") {
+        return jobType.includes("teljes munkaidő");
+      }
+
+      if (schedule === "resz") {
+        return jobType.includes("részmunkaidő");
+      }
+
+      if (schedule === "muszak") {
+        return jobType.includes("műszak");
+      }
+
+      return false;
+    });
+const salaryRange = getSalaryRange(job.salary);
+
+const matchesSalary =
+  (minSalary === 0 || salaryRange.max >= minSalary) &&
+  (maxSalary === 0 || salaryRange.min <= maxSalary);
+  return (
+    matchesSearch &&
+    matchesLocation &&
+    matchesWorkSchedule &&
+    matchesSalary 
+  );
+});
+
+
+function getSalaryNumber(salary: string | null) {
+  if (!salary) return 0;
+
+  const numbers =
+    salary
+      .match(/\d[\d\s.]*/g)
+      ?.map((value) =>
+        Number(value.replace(/[^\d]/g, ""))
+      )
+      .filter((value) => !Number.isNaN(value)) ?? [];
+
+  return numbers.length > 0 ? Math.max(...numbers) : 0;
+}
+
+const sortedJobs = [...filteredJobs].sort((a, b) => {
+  if (sort === "latest") {
+    return (
+      new Date(b.created_at).getTime() -
+      new Date(a.created_at).getTime()
+    );
+  }
+
+  if (sort === "salary") {
+    return (
+      getSalaryNumber(b.salary) -
+      getSalaryNumber(a.salary)
+    );
+  }
+
+  return (b.match ?? 0) - (a.match ?? 0);
+});
 
 if (error) {
   console.error("Supabase hiba:", error);
@@ -31,17 +159,15 @@ if (error) {
           </a>
 
           <div className="flex items-center gap-4">
-            <a
-              href="/"
-              className="text-sm font-medium text-slate-600 hover:text-blue-700"
-            >
-              Főoldal
-            </a>
+  <a
+    href="/"
+    className="text-sm font-medium text-slate-600 hover:text-blue-700"
+  >
+    Főoldal
+  </a>
 
-            <button className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-50">
-              Belépés
-            </button>
-          </div>
+  <UserAccountNav />
+</div>
         </div>
       </header>
 
@@ -96,84 +222,33 @@ if (error) {
                 Munkarend
               </label>
 
-              <div className="mt-3 space-y-3 text-sm text-slate-600">
-                <label className="flex gap-2">
-                  <input type="checkbox" />
-                  Teljes munkaidő
-                </label>
-
-                <label className="flex gap-2">
-                  <input type="checkbox" />
-                  Részmunkaidő
-                </label>
-
-                <label className="flex gap-2">
-                  <input type="checkbox" />
-                  Több műszak
-                </label>
-              </div>
+             <WorkScheduleFilter />
             </div>
 
             <div className="mt-8">
-              <label className="text-sm font-semibold text-slate-700">
-                Fizetés
-              </label>
+  <label className="text-sm font-semibold text-slate-700">
+    Fizetés
+  </label>
 
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <input
-                  type="text"
-                  placeholder="Min."
-                  className="w-full rounded-lg border px-3 py-2 text-sm"
-                />
-
-                <input
-                  type="text"
-                  placeholder="Max."
-                  className="w-full rounded-lg border px-3 py-2 text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <label className="text-sm font-semibold text-slate-700">
-                Távolság
-              </label>
-
-              <select className="mt-3 w-full rounded-lg border px-3 py-2 text-sm">
-                <option>Mindegy</option>
-                <option>10 km-en belül</option>
-                <option>25 km-en belül</option>
-                <option>50 km-en belül</option>
-              </select>
-            </div>
+  <SalaryFilter />
+</div>
+<ClearFiltersButton />
           </aside>
 
           {/* JOBS */}
           <div className="flex-1">
             <div className="mb-5 flex items-center justify-between">
               <p className="text-sm text-slate-500">
-      {jobs.filter((job) =>
-  job.title.toLowerCase().includes(search) &&
-  job.location.toLowerCase().includes(location)
-).length} állás található
+      {filteredJobs.length} állás található
               </p>
 
-              <select className="rounded-lg border bg-white px-3 py-2 text-sm">
-                <option>Legrelevánsabb</option>
-                <option>Legfrissebb</option>
-                <option>Fizetés szerint</option>
-              </select>
+              <SortSelect currentSort={sort} />
             </div>
 
             <div className="space-y-4">
-              {jobs
-  .filter((job) =>
-  job.title.toLowerCase().includes(search) &&
-  job.location.toLowerCase().includes(location)
-)
-.map((job) => (
+              {sortedJobs.map((job) => (
                 <article
-                  key={job.title}
+                  key={job.id}
                   className="rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-blue-300 hover:shadow-sm"
                 >
                   <div className="flex flex-col justify-between gap-5 md:flex-row">
