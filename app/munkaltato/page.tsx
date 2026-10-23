@@ -177,8 +177,8 @@ export default async function EmployerPage() {
           </div>
         </div>
       </div>
-      <div className="mt-8 rounded-2xl border bg-white p-6 shadow-sm">
-  <h2 className="text-xl font-bold text-slate-900">
+      <div className="mx-2 mt-8 rounded-2xl border bg-white p-6 shadow-sm">
+  <h2 className=" text-xl font-bold text-slate-900">
     Lezárt állások
   </h2>
 

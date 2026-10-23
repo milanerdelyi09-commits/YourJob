@@ -1,9 +1,7 @@
 import { supabase } from "../../lib/supabase";
 import SortSelect from "./SortSelect";
-import WorkScheduleFilter from "./WorkScheduleFilter";
-import SalaryFilter from "./SalaryFilter";
-import ClearFiltersButton from "./ClearFiltersButton";
 import UserAccountNav from "../UserAccountNav";
+import FiltersPanel from "./FiltersPanel";
 
 export default async function JobsPage({
   searchParams,
@@ -145,12 +143,19 @@ const sortedJobs = [...filteredJobs].sort((a, b) => {
 if (error) {
   console.error("Supabase hiba:", error);
 }
+function safeSalaryText(salary: string | null) {
+  if (!salary) {
+    return "Nincs megadva";
+  }
+
+  return salary.replace(/ /g, "\u2060 ");
+}
   return (
     
     <main className="min-h-screen bg-slate-50">
       {/* HEADER */}
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
           <a
             href="/"
             className="text-2xl font-bold tracking-tight text-blue-700"
@@ -158,7 +163,7 @@ if (error) {
             YourJob
           </a>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
   <a
     href="/"
     className="text-sm font-medium text-slate-600 hover:text-blue-700"
@@ -212,28 +217,7 @@ if (error) {
       <section className="mx-auto max-w-7xl px-6 py-10">
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* FILTERS */}
-          <aside className="w-full rounded-2xl border border-slate-200 bg-white p-6 lg:w-72">
-            <h2 className="font-bold text-slate-900">
-              Szűrés
-            </h2>
-
-            <div className="mt-6">
-              <label className="text-sm font-semibold text-slate-700">
-                Munkarend
-              </label>
-
-             <WorkScheduleFilter />
-            </div>
-
-            <div className="mt-8">
-  <label className="text-sm font-semibold text-slate-700">
-    Fizetés
-  </label>
-
-  <SalaryFilter />
-</div>
-<ClearFiltersButton />
-          </aside>
+        <FiltersPanel />
 
           {/* JOBS */}
           <div className="flex-1">
@@ -253,15 +237,15 @@ if (error) {
                 >
                   <div className="flex flex-col justify-between gap-5 md:flex-row">
                     <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h2 className="text-xl font-bold text-slate-900">
-                          {job.title}
-                        </h2>
+                      <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3">
+  <h2 className="text-xl font-bold leading-tight text-slate-900">
+    {job.title}
+  </h2>
 
-                        <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                          {job.match}% illeszkedés
-                        </span>
-                      </div>
+  <span className="shrink-0 rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+    {job.match}% illeszkedés
+  </span>
+</div>
 
                       <p className="mt-2 text-sm font-medium text-slate-600">
                         {job.company}
@@ -269,7 +253,7 @@ if (error) {
 
                       <div className="mt-4 space-y-1 text-sm text-slate-600">
                         <p>📍 {job.location}</p>
-                        <p>💰 {job.salary}</p>
+                        <p>💰 {safeSalaryText(job.salary)}</p>
                         <p>🕐 {job.type}</p>
                       </div>
                     </div>

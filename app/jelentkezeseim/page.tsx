@@ -74,7 +74,7 @@ export default async function ApplicationsPage() {
         )}
 
         {!error && applications.length === 0 && (
-          <div className="rounded-2xl border bg-white p-8 shadow-sm">
+          <div className="mx-2 rounded-2xl border bg-white p-5 shadow-sm sm:p-6">
             <p className="font-semibold text-slate-900">
               Még nincs jelentkezésed.
             </p>

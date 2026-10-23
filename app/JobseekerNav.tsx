@@ -24,16 +24,16 @@ export default function JobseekerNav() {
   }
 
   return (
-    <header className="mb-8 rounded-2xl border bg-white px-6 py-4 shadow-sm">
-      <div className="flex items-center justify-between">
+    <header className="mb-8 rounded-2xl border bg-white px-5 py-4 shadow-sm">
+  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href="/"
-          className="text-xl font-bold text-blue-700"
+          className="text-center text-xl font-bold text-blue-700 sm:text-left"
         >
           YourJob
         </Link>
 
-        <nav className="flex items-center gap-5 text-sm font-semibold">
+        <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-sm font-semibold">
           <Link
             href="/"
             className={linkClass("/")}
@@ -64,7 +64,7 @@ export default function JobseekerNav() {
 
           <button
             onClick={handleLogout}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 hover:bg-slate-50"
+            className="mt-3 rounded-lg border border-slate-500 px-4 py-2 text-slate-700 hover:bg-slate-50 sm:mt-0"
           >
             Kijelentkezés
           </button>

@@ -73,15 +73,15 @@ export default function EmployerNav() {
 
   return (
     <header className="border-b bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href="/"
-          className="text-xl font-bold text-blue-700"
+          className="text-center text-xl font-bold text-blue-700 sm:text-left"
         >
           YourJob
         </Link>
 
-        <nav className="flex items-center gap-5 text-sm font-semibold text-slate-700">
+        <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-sm font-semibold text-slate-700">
           <Link href="/munkaltato" className="hover:text-blue-700">
             Dashboard
           </Link>
@@ -109,7 +109,7 @@ export default function EmployerNav() {
 
           <button
             onClick={handleLogout}
-            className="rounded-lg border border-slate-300 px-4 py-2 hover:bg-slate-50"
+            className="mt-2 rounded-lg border border-slate-300 px-4 py-2 hover:bg-slate-50 sm:mt-0"
           >
             Kijelentkezés
           </button>

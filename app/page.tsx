@@ -11,12 +11,12 @@ export default function Home() {
     <main className="min-h-screen bg-slate-50">
       {/* Fejléc */}
       <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-2xl font-bold text-blue-700">
             YourJob
           </div>
 
-          <nav className="flex items-center gap-6 text-sm font-medium text-slate-600">
+          <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-medium text-slate-600">
             <a href="/allasok" className="hover:text-blue-700">
               Állások
             </a>
@@ -32,19 +32,19 @@ export default function Home() {
 
       {/* Hero */}
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-20">
+        <div className="mx-auto max-w-6xl px-6 py-12 sm:py-20">
           <div className="max-w-3xl">
             <p className="mb-4 font-semibold text-blue-700">
               Találd meg a hozzád illő munkát
             </p>
 
-            <h1 className="text-5xl font-bold tracking-tight text-slate-900">
+           <h1 className="text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl">
               Kategória szerint, pontosabb szűréssel
               <br />
               Akár, ha diák vagy is egyszerűbben.
             </h1>
 
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
               A YourJob segít megtalálni azokat az állásokat,
               amelyek a tapasztalatodhoz, elvárásaidhoz és
               élethelyzetedhez is illenek.

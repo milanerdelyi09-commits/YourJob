@@ -91,7 +91,7 @@ export default function UserAccountNav() {
 
   if (userType === "jobseeker") {
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
       <Link
         href="/jelentkezeseim"
         className="font-semibold text-slate-700 hover:text-blue-700"
